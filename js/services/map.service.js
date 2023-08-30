@@ -2,7 +2,8 @@ export const mapService = {
     initMap,
     addMarker,
     panTo,
-    getMap
+    getMap,
+    getUserLocation
 }
 
 
@@ -56,5 +57,26 @@ function _connectGoogleApi() {
     return new Promise((resolve, reject) => {
         elGoogleApi.onload = resolve
         elGoogleApi.onerror = () => reject('Google script failed to load')
+    })
+}
+
+function getUserLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const userLatLng = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    }
+                    resolve(userLatLng);
+                },
+                error => {
+                    reject(error)
+                }
+            )
+        } else {
+            reject('Geolocation is not available.')
+        }
     })
 }
