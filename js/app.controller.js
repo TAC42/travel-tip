@@ -12,13 +12,8 @@ window.onGotoLoc = onGotoLoc
 
 function onInit() {
     mapService.initMap()
-        .then(() => {
-            console.log('Map is ready')
-            addEventListener()
-        })
-        .then(() => {
-            locService.checkDataB()   
-        })
+        .then(addEventListener)
+        .then(locService.checkDataB)
         .then(renderLocs)
         .catch(() => console.log('Error: cannot init map'))
 }
@@ -33,7 +28,7 @@ function renderLocs() {
                 <h5>Lat: ${loc.lat} </h5>
                 <h5>Lng: ${loc.lng} </h5>
                 <h5> ${new Date(loc.createdAt)}</h5>
-                <button onclick="onGotoLoc('${loc.name}','${loc.lat}','${loc.lng}')">GO</button>
+                <button onclick="onGotoLoc('${loc.name}',${loc.lat},${loc.lng})">GO</button>
                 <button onclick="onRemoveLoc('${loc.id}')">Delete</button>
                 </article>`
             })
@@ -67,8 +62,8 @@ function onRemoveLoc(locId) {
 
 function onGotoLoc(name, lat, lng) {
     const loc = { lat, lng }
-    locService.addMarker(loc, name)
-    locService.panTo(lat, lng)
+    mapService.addMarker(loc, name)
+    mapService.panTo(lat, lng)
 }
 
 

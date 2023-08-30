@@ -8,7 +8,6 @@ export const locService = {
     checkDataB
 }
 
-
 let locs = [
     {  name: 'Greatplace', lat: 32.047104, lng: 34.832384, createdAt: 1693399740 },
     {  name: 'Neveragain', lat: 32.047201, lng: 34.832581, createdAt: 1293399740 }
@@ -16,15 +15,14 @@ let locs = [
 
 function checkDataB() {
     storageService.query(LOC_STORAGE_KEY)
-        .then( (locations) => {
-            console.log('locations:', locations);
-            if(!locations) reject('No Database')
-            else locs = locations
-            console.log('locs:', locs);
+        .then((locations) => {
+            console.log('locations:', locations)
+            if(!locations || !locations.length) {
+                storageService.post(LOC_STORAGE_KEY, locs[0])
+                storageService.post(LOC_STORAGE_KEY, locs[1])
+            } else locs = locations
         })
         .catch( (error) => {
-            storageService.post(LOC_STORAGE_KEY, locs[0])
-            storageService.post(LOC_STORAGE_KEY, locs[1])
             console.log(error)})
 }
 
@@ -40,6 +38,7 @@ function addNewLoc(lat, lng, name, createdAt) {
 }
 
 function removeLoc(locId) {
+    console.log('locId:', locId);
     storageService.remove(LOC_STORAGE_KEY, locId)
 }
 
