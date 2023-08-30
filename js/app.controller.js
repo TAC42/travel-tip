@@ -11,10 +11,26 @@ function onInit() {
     mapService.initMap()
         .then(() => {
             console.log('Map is ready')
+            addEventListener()
         })
         .catch(() => console.log('Error: cannot init map'))
 }
 
+
+function addEventListener(){
+    const map = mapService.getMap()
+    map.addListener("click", (mapsMouseEvent) => {
+        console.log('mapsMouseEvent:', mapsMouseEvent);
+        const { latLng } = mapsMouseEvent
+        const { lat, lng } = latLng
+        console.log('lat, lng :', lat, lng );
+        onMapClick(lat(), lng())
+    })
+}
+
+function onMapClick(lat , lang) {
+    console.log('lat + lang:', lat, lang);
+}
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
     console.log('Getting Pos')
