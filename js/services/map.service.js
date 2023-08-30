@@ -5,7 +5,6 @@ export const mapService = {
     getMap
 }
 
-
 // Var that is used throughout this Module (not global)
 var gMap
 
@@ -28,8 +27,6 @@ function getMap(){
     return gMap
 }
 
-
-
 function addMarker(loc) {
     var marker = new google.maps.Marker({
         position: loc,
@@ -43,7 +40,6 @@ function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng)
     gMap.panTo(laLatLng)
 }
-
 
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()

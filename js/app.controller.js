@@ -16,20 +16,42 @@ function onInit() {
         .catch(() => console.log('Error: cannot init map'))
 }
 
+function renderLocs(){
+    const locs = locService.getLocs()
+    console.log('locs:', locs);
+    let strHTMLs = locs.map((loc) => {
+        return `<article class="location" >
+        <h5>${loc.name} </h5>
+        <h5>Lat: ${loc.lat} </h5>
+        <h5>Lng: ${loc.lng} </h5>
+        <h5> ${new Date(loc.createdAt)}</h5>
+        <button onclick="onAddMarker('${loc.name},${loc.lat},${loc.lng} ')">GO</button>
+        <button onclick="onAddMarker('${loc.id}')">Delete</button>
+        </article>`
+    })
+    const elLocTable = document.querySelector('.loc-table')
+    elLocTable.innerHTML = strHTMLs.join('')
 
-function addEventListener(){
+
+}
+
+
+function addEventListener() {
     const map = mapService.getMap()
     map.addListener("click", (mapsMouseEvent) => {
         console.log('mapsMouseEvent:', mapsMouseEvent);
         const { latLng } = mapsMouseEvent
         const { lat, lng } = latLng
-        console.log('lat, lng :', lat, lng );
-        onMapClick(lat(), lng())
+        const { timeStamp: createdAt } = mapsMouseEvent.domEvent
+        onMapClick(lat(), lng(), createdAt)
     })
 }
 
-function onMapClick(lat , lang) {
-    console.log('lat + lang:', lat, lang);
+function onMapClick(lat, lng, createdAt) {
+    locService.addNewMap(lat, lng, createdAt)
+    mapService.addMarker({lat,lng})
+    renderLocs()
+
 }
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
@@ -41,7 +63,7 @@ function getPosition() {
 
 function onAddMarker() {
     console.log('Adding a marker')
-                    .addMarker({ lat: 32.0749831, lng: 34.9120554 })
+        .addMarker({ lat: 32.0749831, lng: 34.9120554 })
 }
 
 function onGetLocs() {
