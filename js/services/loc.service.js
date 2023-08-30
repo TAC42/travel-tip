@@ -1,28 +1,48 @@
-import { storageService } from './services/storage.service.js'
-import { utilService } from './services/util.service.js'
+import { storageService } from './storage.service.js'
 
 const LOC_STORAGE_KEY = 'locsDB'
 export const locService = {
     getLocs,
-    addNewLoc
+    addNewLoc,
+    removeLoc,
+    checkDataB
 }
 
 
-const locs = [
-    { id: 1, name: 'Greatplace', lat: 32.047104, lng: 34.832384, createdAt: 1693399740 },
-    { id: 2, name: 'Neveragain', lat: 32.047201, lng: 34.832581 createdAt: 1293399740 }
+let locs = [
+    {  name: 'Greatplace', lat: 32.047104, lng: 34.832384, createdAt: 1693399740 },
+    {  name: 'Neveragain', lat: 32.047201, lng: 34.832581, createdAt: 1293399740 }
 ]
 
-function addNewLoc(lat, lng, createdAt) {
-    locs.push({
-        id: utilService.makeId(),
-        name: prompt('Please name your new location:'), 
+function checkDataB() {
+    storageService.query(LOC_STORAGE_KEY)
+        .then( (locations) => {
+            console.log('locations:', locations);
+            if(!locations) reject('No Database')
+            else locs = locations
+            console.log('locs:', locs);
+        })
+        .catch( (error) => {
+            storageService.post(LOC_STORAGE_KEY, locs[0])
+            storageService.post(LOC_STORAGE_KEY, locs[1])
+            console.log(error)})
+}
+
+function addNewLoc(lat, lng, name, createdAt) {
+    const loc = {
+        name,
         lat,
         lng,
         createdAt
-    })
-    storageService.load(LOC_STORAGE_KEY, locs)
+    }
+    locs.push(loc)
+    storageService.post(LOC_STORAGE_KEY, loc)
 }
+
+function removeLoc(locId) {
+    storageService.remove(LOC_STORAGE_KEY, locId)
+}
+
 
 function getLocs() {
     return new Promise((resolve, reject) => {

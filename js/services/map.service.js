@@ -2,7 +2,8 @@ export const mapService = {
     initMap,
     addMarker,
     panTo,
-    getMap
+    getMap,
+    getUserLocation
 }
 
 // Var that is used throughout this Module (not global)
@@ -19,19 +20,19 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 zoom: 15
             })
             console.log('Map!', gMap)
-            
+
         })
 }
 
-function getMap(){
+function getMap() {
     return gMap
 }
 
-function addMarker(loc) {
+function addMarker(loc, name) {
     var marker = new google.maps.Marker({
         position: loc,
         map: gMap,
-        title: 'Hello World!'
+        title: name
     })
     return marker
 }
@@ -52,5 +53,26 @@ function _connectGoogleApi() {
     return new Promise((resolve, reject) => {
         elGoogleApi.onload = resolve
         elGoogleApi.onerror = () => reject('Google script failed to load')
+    })
+}
+
+function getUserLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const userLatLng = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    }
+                    resolve(userLatLng);
+                },
+                error => {
+                    reject(error)
+                }
+            )
+        } else {
+            reject('Geolocation is not available.')
+        }
     })
 }
